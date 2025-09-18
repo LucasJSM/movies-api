@@ -1,0 +1,18 @@
+# Arquivos de Log
+*.log
+
+# Arquivos gerados pelo Maven
+/target/
+
+# Arquivos gerados pelo Eclipse
+.classpath
+.project
+.settings/
+
+# Arquivos de configuração com informações sensíveis
+# NUNCA comite este arquivo no repositório.
+/src/main/resources/config.properties
+
+# Arquivos de sistema operacional
+.DS_Store
+Thumbs.db
