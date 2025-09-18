@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Busca de Filmes OMDB</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 40px; }
+        .container { max-width: 600px; margin: auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        input[type="text"] { width: 70%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; }
+        button { padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background-color: #0056b3; }
+        #resultado { margin-top: 20px; }
+        #resultado h2 { color: #333; }
+        #resultado p { line-height: 1.6; }
+        #resultado img { max-width: 150px; float: left; margin-right: 20px; border-radius: 4px; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Busca de Filmes na OMDB</h1>
+        <form id="buscaForm">
+            <input type="text" id="tituloFilme" placeholder="Digite o título do filme" required>
+            <button type="submit">Buscar</button>
+        </form>
+        <div id="loading" style="display: none;">Buscando...</div>
+        <div id="resultado"></div>
+    </div>
+
+    <script>
+        document.getElementById('buscaForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Impede o recarregamento da página
+
+            const titulo = document.getElementById('tituloFilme').value;
+            const resultadoDiv = document.getElementById('resultado');
+            const loadingDiv = document.getElementById('loading');
+
+            resultadoDiv.innerHTML = '';
+            loadingDiv.style.display = 'block';
+
+            // Chama nosso Servlet
+            fetch(`buscar-filme?titulo=${encodeURIComponent(titulo)}`)
+                .then(response => response.json())
+                .then(data => {
+                    loadingDiv.style.display = 'none';
+                    if (data.Response === "True") {
+                        resultadoDiv.innerHTML = `
+                            <img src="${data.Poster}" alt="Pôster de ${data.Title}">
+                            <h2>${data.Title} (${data.Year})</h2>
+                            <p><strong>Gênero:</strong> ${data.Genre}</p>
+                            <p><strong>Diretor:</strong> ${data.Director}</p>
+                            <p><strong>Sinopse:</strong> ${data.Plot}</p>
+                            <p><strong>Nota IMDb:</strong> ${data.imdbRating}</p>
+                        `;
+                    } else {
+                        resultadoDiv.innerHTML = `<p class="error">${data.Error}</p>`;
+                    }
+                })
+                .catch(error => {
+                    loadingDiv.style.display = 'none';
+                    resultadoDiv.innerHTML = `<p class="error">Ocorreu um erro na comunicação. Tente novamente.</p>`;
+                    console.error('Erro:', error);
+                });
+        });
+    </script>
+</body>
+</html>
