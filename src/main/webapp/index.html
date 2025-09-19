@@ -18,7 +18,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>Busca de Filmes na OMDB</h1>
+        <h1>Busca de Filmes</h1>
         <form id="buscaForm">
             <input type="text" id="tituloFilme" placeholder="Digite o título do filme" required>
             <button type="submit">Buscar</button>
@@ -29,7 +29,7 @@
 
     <script>
         document.getElementById('buscaForm').addEventListener('submit', function(event) {
-            event.preventDefault(); // Impede o recarregamento da página
+            event.preventDefault();
 
             const titulo = document.getElementById('tituloFilme').value;
             const resultadoDiv = document.getElementById('resultado');
@@ -38,7 +38,6 @@
             resultadoDiv.innerHTML = '';
             loadingDiv.style.display = 'block';
 
-            // Chama nosso Servlet
             fetch(`buscar-filme?titulo=${encodeURIComponent(titulo)}`)
                 .then(response => response.json())
                 .then(data => {

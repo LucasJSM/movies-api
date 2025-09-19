@@ -9,8 +9,7 @@
 .project
 .settings/
 
-# Arquivos de configuração com informações sensíveis
-# NUNCA comite este arquivo no repositório.
+# Arquivos de configuração
 /src/main/resources/config.properties
 
 # Arquivos de sistema operacional

@@ -21,24 +21,21 @@ public class OmdbService {
         }
 
         String apiKey = Configuracao.getApiKey();
-        String tituloEncodado = URLEncoder.encode(titulo, StandardCharsets.UTF_8.name());
-        String url = String.format("%s?apikey=%s&t=%s", API_BASE_URL, apiKey, tituloEncodado);
+        String tituloEncode = URLEncoder.encode(titulo, StandardCharsets.UTF_8.name());
+        String url = String.format("%s?apikey=%s&t=%s", API_BASE_URL, apiKey, tituloEncode);
 
         HttpGet request = new HttpGet(url);
 
         try (CloseableHttpResponse response = httpClient.execute(request)) {
-            // ---- INÍCIO DA MODIFICAÇÃO ----
             int statusCode = response.getStatusLine().getStatusCode();
             
             if (statusCode != 200) {
-                // ISSO VAI MOSTRAR O ERRO REAL NO CONSOLE DO ECLIPSE
+                
                 System.err.println("Erro ao chamar a API OMDB. Status Code: " + statusCode);
                 System.err.println("Resposta completa: " + EntityUtils.toString(response.getEntity()));
                 
-                // Mantemos o retorno amigável para o frontend
                 return "{\"Error\":\"Falha na comunicação com a API OMDB.\"}";
             }
-            // ---- FIM DA MODIFICAÇÃO ----
             
             HttpEntity entity = response.getEntity();
             return EntityUtils.toString(entity);

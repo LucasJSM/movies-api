@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import br.com.omdb.service.OmdbService;
 
-@WebServlet("/buscar-filme") // Mapeia a URL para este Servlet
+@WebServlet("/buscar-filme")
 public class FilmeServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private OmdbService omdbService = new OmdbService();
