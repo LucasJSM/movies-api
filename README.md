@@ -16,8 +16,13 @@ Exibição dos filmes encontrados em formato de grid.
 
 ### 3. Detalhes e Notas
 As notas (IMDb) são carregadas individualmente para garantir precisão.
-![Screenshot do Card com a nota do Batman](assets/images/Dark_Knight.png)
-![Screenshot do Card com a nota da série Dark](assets/images/Dark_Series.png)
+
+<div align="center">
+   
+   ![Screenshot do Card com a nota do Batman](assets/images/Dark_Knight.png)
+   ![Screenshot do Card com a nota da série Dark](assets/images/Dark_Series.png)
+   
+</div>
 
 ---
 
