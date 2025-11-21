@@ -2,65 +2,161 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Busca de Filmes OMDB</title>
+    <title>Buscar Filmes no OMDB</title>
     <style>
-        body { font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 40px; }
-        .container { max-width: 600px; margin: auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        input[type="text"] { width: 70%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; }
-        button { padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
-        button:hover { background-color: #0056b3; }
-        #resultado { margin-top: 20px; }
-        #resultado h2 { color: #333; }
-        #resultado p { line-height: 1.6; }
-        #resultado img { max-width: 150px; float: left; margin-right: 20px; border-radius: 4px; }
-        .error { color: red; }
+		body { 
+			font-family: Arial, sans-serif; 
+			background-color: #f4f4f4; 
+			margin: 40px; 
+		}
+		
+        .container { 
+	        max-width: 1000px; 
+	        margin: auto; 
+	        background: #fff; 
+	        padding: 20px; 
+	        border-radius: 8px; 
+	        box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+        }
+        
+        .container-title {
+        	text-align: center;
+        }
+        
+        input[type="text"] { 
+	        width: 60%; 
+	        padding: 10px; 
+	        border: 1px solid #ddd; 
+	        border-radius: 4px; 
+        }
+        
+        button { 
+	        padding: 10px 20px; 
+	        background-color: #007bff; 
+	        color: white; 
+	        border: none; 
+	        border-radius: 4px; 
+	        cursor: pointer; 
+        }
+        
+        #resultado { 
+            margin-top: 20px; 
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .movie-card {
+            border: 1px solid #eee; 
+            border-radius: 8px; 
+            padding: 10px; background: #fafafa;
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            text-align: center;
+            position: relative;
+        }
+
+        .movie-card img { 
+	        width: 100%; 
+	        height: 300px; 
+	        object-fit: cover; 
+	        border-radius: 4px; 
+	        margin-bottom: 10px; 
+        }
+        
+        .movie-card h2 { 
+	        font-size: 16px; 
+	        color: #333; 
+	        margin: 10px 0 5px 0; 
+        }
+        
+        .movie-card p { 
+	        font-size: 14px; 
+	        color: #666; 
+	        margin: 0; 
+        }
+
+        .rating-badge {
+            background-color: #e50914; 
+            color: white; 
+            font-weight: bold;
+            padding: 5px 10px; 
+            border-radius: 20px; 
+            margin-top: 10px;
+            font-size: 0.9em; 
+            min-width: 30px;
+        }
+        
+        .error { 
+	        color: red; 
+	        grid-column: 1 / -1; 
+	        text-align: center; 
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Busca de Filmes</h1>
-        <form id="buscaForm">
+        <h1 class="container-title">Buscar Filmes</h1>
+        <form id="buscaForm" style="text-align: center; margin-bottom: 30px;">
             <input type="text" id="tituloFilme" placeholder="Digite o título do filme" required>
             <button type="submit">Buscar</button>
         </form>
-        <div id="loading" style="display: none;">Buscando...</div>
+        <div id="loading" style="display: none; text-align: center;">Buscando...</div>
         <div id="resultado"></div>
     </div>
 
     <script>
-        document.getElementById('buscaForm').addEventListener('submit', function(event) {
-            event.preventDefault();
+    document.getElementById('buscaForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        const titulo = document.getElementById('tituloFilme').value;
+        const resultadoDiv = document.getElementById('resultado');
+        const loadingDiv = document.getElementById('loading');
 
-            const titulo = document.getElementById('tituloFilme').value;
-            const resultadoDiv = document.getElementById('resultado');
-            const loadingDiv = document.getElementById('loading');
+        resultadoDiv.innerHTML = '';
+        loadingDiv.style.display = 'block';
 
-            resultadoDiv.innerHTML = '';
-            loadingDiv.style.display = 'block';
-
-            fetch(`buscar-filme?titulo=${encodeURIComponent(titulo)}`)
-                .then(response => response.json())
-                .then(data => {
-                    loadingDiv.style.display = 'none';
-                    if (data.Response === "True") {
-                        resultadoDiv.innerHTML = `
-                            <img src="${data.Poster}" alt="Pôster de ${data.Title}">
-                            <h2>${data.Title} (${data.Year})</h2>
-                            <p><strong>Gênero:</strong> ${data.Genre}</p>
-                            <p><strong>Diretor:</strong> ${data.Director}</p>
-                            <p><strong>Sinopse:</strong> ${data.Plot}</p>
-                            <p><strong>Nota IMDb:</strong> ${data.imdbRating}</p>
+        fetch(`buscar-filme?titulo=${encodeURIComponent(titulo)}`)
+            .then(response => response.json())
+            .then(data => {
+                loadingDiv.style.display = 'none';
+                if (data.Response === "True") {
+                    data.Search.forEach(movie => {
+                        const poster = movie.Poster !== "N/A" ? movie.Poster : "https://via.placeholder.com/300x450?text=Sem+Imagem";
+                        
+                        const cardHtml = `
+                            <div class="movie-card">
+                                <img src="${poster}" alt="${movie.Title}">
+                                <h2>${movie.Title}</h2>
+                                <p>${movie.Year}</p>
+                                <div id="rating-${movie.imdbID}" class="rating-badge">...</div>
+                            </div>
                         `;
-                    } else {
-                        resultadoDiv.innerHTML = `<p class="error">${data.Error}</p>`;
-                    }
-                })
-                .catch(error => {
-                    loadingDiv.style.display = 'none';
-                    resultadoDiv.innerHTML = `<p class="error">Ocorreu um erro na comunicação. Tente novamente.</p>`;
-                    console.error('Erro:', error);
-                });
-        });
+                        resultadoDiv.innerHTML += cardHtml;
+
+                        carregarNota(movie.imdbID);
+                    });
+                } else {
+                    resultadoDiv.innerHTML = `<p class="error">${data.Error}</p>`;
+                }
+            })
+            .catch(error => {
+                loadingDiv.style.display = 'none';
+                console.error(error);
+            });
+    });
+
+    function carregarNota(imdbID) {
+        fetch(`buscar-filme?id=${imdbID}`)
+            .then(response => response.json())
+            .then(data => {
+                const ratingElement = document.getElementById(`rating-${imdbID}`);
+                if (ratingElement) {
+                    ratingElement.innerText = data.imdbRating || "N/A";
+                }
+            })
+            .catch(err => console.error("Erro ao carregar nota:", err));
+    }
     </script>
 </body>
 </html>

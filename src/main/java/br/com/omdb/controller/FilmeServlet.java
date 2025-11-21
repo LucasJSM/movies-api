@@ -16,21 +16,31 @@ public class FilmeServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String titulo = request.getParameter("titulo");
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        PrintWriter out = response.getWriter();
 
         try {
-            String jsonResponse = omdbService.buscarFilmePorTitulo(titulo);
+            String jsonResponse = "";
 
-            response.setContentType("application/json");
-            response.setCharacterEncoding("UTF-8");
-
-            PrintWriter out = response.getWriter();
+            String id = request.getParameter("id");
+            String titulo = request.getParameter("titulo");
+            
+            if(id != null && !id.isEmpty()) {
+            	jsonResponse = omdbService.buscarDetalhesPorId(id);
+            } else if(titulo != null && !titulo.isEmpty()) {
+            	jsonResponse = omdbService.buscarFilmes(titulo);
+            } else {
+            	jsonResponse = "{\"Error\":\"Parâmetros inválidos.\"}";
+            }
+            
             out.print(jsonResponse);
-            out.flush();
-
+            
         } catch (Exception e) {
             e.printStackTrace();
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Erro ao buscar filme.");
+        } finally {
+        	out.flush();
         }
     }
 }
